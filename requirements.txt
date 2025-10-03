@@ -1,0 +1,6 @@
+torch
+torchvision
+pydantic
+fastapi
+uvicorn
+scikit-learn
