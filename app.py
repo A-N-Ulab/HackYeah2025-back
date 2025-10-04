@@ -59,6 +59,12 @@ def general_endpoint_handler(path: str) -> Union[dict, tuple[dict, int]]:
 
     bodyDict = request.json
 
+    print("HANDLING NEW REQUEST")
+    print("-------------")
+    print(path)
+    print(bodyDict)
+    print("-------------")
+
     if os.path.isfile(f"handlers/{handlerName}.py"):
         handlerModule = importlib.import_module(
             f"handlers.{handlerName}"

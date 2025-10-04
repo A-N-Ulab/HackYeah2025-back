@@ -21,17 +21,22 @@ def handle(event: Model, store: MainStore):
 
     destinations = []
 
-    result = Destination.query.filter_by(id=1).first()
+    allResults = Destination.query.filter(Destination.id<10).all()
 
-    if result is None:
+    print(allResults)
+
+    if len(allResults) == 0:
         return {"error": "Internal server error"}, 500
 
-    destinations.append({
-        "id": result.id,
-        "name": result.name,
-        "description": result.description,
-        "photo_name": result.photo_name,
-    })
+    for result in allResults:
+        destinations.append({
+            "id": result.id,
+            "name": result.name,
+            "description": result.description,
+            "photo_name": result.photo_name,
+        })
 
     response = {"destinations": destinations, "state": trip.state}
+
+    print("resp: ", response)
     return response
