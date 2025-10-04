@@ -1,12 +1,15 @@
+import importlib
 import os
+from typing import Union
 
+from dotenv import load_dotenv
 from flask import Flask
+from flask import request
+from flask_cors import CORS
+from pydantic import BaseModel, ValidationError
 
 from db_models.Users import User
 from lib import db
-from flask_cors import CORS
-
-from dotenv import load_dotenv
 
 
 def create_app():
@@ -34,7 +37,14 @@ def create_app():
 
     db.init_app(app)
 
+    init_handlers()
+
     return app
+
+
+def init_handlers():
+    print("Handlers imported")
+    pass
 
 
 app = create_app()
@@ -43,6 +53,42 @@ app = create_app()
 @app.route("/")
 def hello_world():
     return {"hi": "me"}
+
+
+@app.route('/<path:path>', methods=['POST'])
+def general_endpoint_handler(path: str) -> Union[dict, tuple[dict, int]]:
+    handlerName = path
+
+    bodyDict = request.json
+
+    if os.path.isfile(f"handlers/{handlerName}.py"):
+        handlerModule = importlib.import_module(
+            f"handlers.{handlerName}"
+        )
+    else:
+        return {"error": f"Invalid endpoint: '{path}'"}, 404
+
+    assert hasattr(handlerModule, "handle"), "Handler not set up properly: No 'handle' method"
+    assert hasattr(handlerModule, "Model"), "Handler not set up properly: No 'Model' class"
+
+    handleMethod = getattr(handlerModule, "handle")
+    ReqModel = getattr(handlerModule, "Model")
+
+    assert callable(handleMethod), "Handler not set up properly: 'handle' method should be callable"
+    assert issubclass(ReqModel, BaseModel), "Handler not set up properly: 'Model' class should inherit from BaseModel"
+
+    try:
+        reqBody = ReqModel(**bodyDict)
+    except ValidationError as err:
+        errors = err.errors(include_input=False)
+        return {"error": errors}, 400
+
+    try:
+        resp = handleMethod(reqBody)
+        return resp
+    except Exception as err:
+        print(str(err))
+        return {"error": "Internal server error"}, 500
 
 
 @app.route("/test")
