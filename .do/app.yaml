@@ -4,3 +4,4 @@ services:
   github:
     repo: A-N-Ulab/HackYeah2025-back
     branch: master
+    deploy_on_push: true
