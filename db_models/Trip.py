@@ -1,5 +1,3 @@
-from matplotlib.style.core import available
-
 from lib import db
 
 TRIP_STATE_FIRST_SURVEY = "first_survey"
