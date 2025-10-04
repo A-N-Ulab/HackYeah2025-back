@@ -1,5 +1,5 @@
 spec:
-  name: hack-yeah-fastapi
+  name: hack-yeah-backend
   services:
   - name: web
     git:
