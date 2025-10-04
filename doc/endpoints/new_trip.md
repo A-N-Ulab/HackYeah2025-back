@@ -15,7 +15,7 @@ Make a POST request to the `/new_trip` endpoint with following payload:
 ## Response
 ```json
 {
-    "id": 12
+    "id": 3
 }
 ```
 Returns trip id if OK, or 403 error code, if the token doesn't exists

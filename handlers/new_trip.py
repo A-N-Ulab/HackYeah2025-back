@@ -13,7 +13,7 @@ class Model(BaseModel):
 def handle(event: Model, store: MainStore):
     print("Create trip!! ", event.model_dump())
 
-    userId = store.getUser(event.token)
+    userId = store.tokens.getUserId(event.token)
 
     if userId is None:
         return {"error": "Invalid token"}, 403
@@ -24,5 +24,5 @@ def handle(event: Model, store: MainStore):
     db.session.add(newTrip)
     db.session.commit()
 
-    return {""}
+    return {"id": newTrip.id}
 

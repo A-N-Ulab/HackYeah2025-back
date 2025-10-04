@@ -13,8 +13,18 @@ Make a POST request to the `/trips` endpoint with following payload:
 ## Response
 ```json
 {
-  "": ""
+    "trips": [
+        {
+            "description": "moj dlogi opis",
+            "id": 3,
+            "name": "nowy opis"
+        },
+        {
+            "description": "moj drogi opis",
+            "id": 4,
+            "name": "nowa destynacja"
+        }
+    ]
 }
-
 ```
 
