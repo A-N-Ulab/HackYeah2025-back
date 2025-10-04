@@ -3,7 +3,6 @@ from scipy.special import softmax
 
 
 
-
 def create_first_time(features_vectors:np.array, chocies:list[bool]) -> np.array:
     VECTOR_FEATURES = 8
 
