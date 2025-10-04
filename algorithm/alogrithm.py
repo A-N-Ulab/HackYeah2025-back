@@ -38,22 +38,19 @@ def update_preferences(user_preferences: np.array, place_features: np.array, dec
     num_features = len(user_preferences)
     RANDOM_PARM_COUNT = 3
 
+    decision = 1
+    if not decision:
+        direction *= -1
 
+
+    user_preferences = np.clip(user_preferences + direction*(place_features-user_preferences),0,1)
 
     #Chosing Random Fetures for DataBase part
     chosen_features = np.zeros(RANDOM_PARM_COUNT)
     indices = np.random.choice(RANDOM_PARM_COUNT, num_features, replace=False)
     chosen_features[indices] = LEARING_RATE
 
-
-
-    if decision:
-        pass
-
     return user_preferences
-
-    # update
-
 
 
 
