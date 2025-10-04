@@ -42,5 +42,5 @@ def update_preferences(user_preferences: np.array, place_features: np.array, dec
     for i in indexes:
         samples[FEATURE_NAMES[i]] = float(user_preferences[i])
 
-    return samples
+    return user_preferences, samples
 
