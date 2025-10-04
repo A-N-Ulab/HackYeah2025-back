@@ -48,14 +48,9 @@ def update_preferences(user_preferences: np.array, place_features: np.array, dec
     user_preferences = np.clip(user_preferences + LR*direction*(place_features-user_preferences),0,1)
 
     #Chosing Random Fetures for DataBase part
-    
+    indexes = np.random.choice(np.arange(0,num_features).astype(int), size=(1, RANDOM_PARM_COUNT))
+    print(indexes)
 
     return user_preferences
 
 
-
-def update_trip():
-    pass
-
-
-print(update_preferences(np.array([0]),np.array([0]),True))
