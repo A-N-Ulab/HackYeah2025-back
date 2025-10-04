@@ -60,7 +60,8 @@ def get_users():
     print("query results: ", results)
 
     response = {
-        "users": []
+        "users": [],
+        "foo": "Bar",
     }
 
     for result in results:
