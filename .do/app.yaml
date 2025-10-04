@@ -2,5 +2,5 @@ name: sample-flask
 services:
 - name: web
   github:
-    repo: digitalocean/sample-flask
-    branch: main
+    repo: A-N-Ulab/HackYeah2025-back
+    branch: master
