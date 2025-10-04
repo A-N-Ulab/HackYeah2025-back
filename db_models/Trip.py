@@ -1,12 +1,12 @@
 from lib import db
 
-class Destination(db.Model):
-    __tablename__ = "destinations"
+class Trip(db.Model):
+    __tablename__ = "trips"
 
     id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
-    photo_name = db.Column(db.String, nullable=False)
 
     orientality = db.Column(db.Float, nullable=False)
     temperature = db.Column(db.Float, nullable=False)
