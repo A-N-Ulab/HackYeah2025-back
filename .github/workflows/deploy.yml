@@ -3,7 +3,7 @@ name: Deploy to DigitalOcean App Platform
 on:
   push:
     branches:
-      - main  # or your deployment branch
+      - master
 
 permissions:
   contents: read
