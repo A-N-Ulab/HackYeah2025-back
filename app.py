@@ -3,7 +3,7 @@ import os
 from flask import Flask
 
 from db_models.Users import User
-from lib import db
+# from lib import db
 from flask_cors import CORS
 
 from dotenv import load_dotenv
@@ -32,7 +32,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-    db.init_app(app)
+    # db.init_app(app)
 
     return app
 
@@ -51,20 +51,20 @@ def test_endpoint():
     return {"test": "endpoint", "user": os.getenv("DB_USERNAME")}
 
 
-@app.route("/users")
-def get_users():
-    print("DB test")
-
-    results = User.query.all()
-
-    print("query results: ", results)
-
-    response = {
-        "users": []
-    }
-
-    for result in results:
-        response["users"].append({"id": result.id, "username": result.username})
-
-    return response
-
+# @app.route("/users")
+# def get_users():
+#     print("DB test")
+#
+#     results = User.query.all()
+#
+#     print("query results: ", results)
+#
+#     response = {
+#         "users": []
+#     }
+#
+#     for result in results:
+#         response["users"].append({"id": result.id, "username": result.username})
+#
+#     return response
+#
