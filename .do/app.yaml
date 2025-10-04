@@ -1,4 +1,4 @@
-name: sample-flask
+name: hack-yeah-fastapi
 services:
 - name: web
   github:
