@@ -3,4 +3,5 @@ torchvision
 pydantic
 fastapi
 uvicorn
+gunicorn
 scikit-learn

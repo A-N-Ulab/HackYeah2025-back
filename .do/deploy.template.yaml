@@ -1,0 +1,7 @@
+spec:
+  name: hack-yeah-fastapi
+  services:
+  - name: web
+    git:
+      branch: master
+      repo_clone_url: https://github.com/A-N-Ulab/HackYeah2025-back.git
