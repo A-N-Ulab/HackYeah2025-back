@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 
-from db_models.Trip import Trip
+from db_models.Trip import Trip, TRIP_STATE_FIRST_SURVEY
 from stores import MainStore
+
+from lib import db
 
 class Model(BaseModel):
     token: str
@@ -11,18 +13,16 @@ class Model(BaseModel):
 def handle(event: Model, store: MainStore):
     print("Create trip!! ", event.model_dump())
 
-    result = User.query.filter(User.username==event.username, User.password==event.password).first()
+    userId = store.getUser(event.token)
 
-    if result is None:
-        return {"Error": "Invalid username or password"}, 403
+    if userId is None:
+        return {"error": "Invalid token"}, 403
 
-    userId = result.id
+    newTrip = Trip(user_id=userId, name=event.name, description=event.description, state=TRIP_STATE_FIRST_SURVEY,
+                   orientality=0, temperature=0, historicity=0, sportiness=0, forest_cover=0, build_up_area=0,
+                   terrain_fluctuation=0, water=0)
+    db.session.add(newTrip)
+    db.session.commit()
 
-    token = store.tokens.getUserToken(userId)
-
-    if token is None:
-        # User not yet logged in - create new token
-        token = store.tokens.createToken(userId)
-
-    return {"token": token, "user_id": userId}
+    return {""}
 
