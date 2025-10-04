@@ -18,10 +18,10 @@ Make a POST request to the `/destinations` endpoint with following payload:
   "is_survey": true,
   "destinations": [
     {
-      "id": result.id,
-      "name": result.name,
-      "description": result.description,
-      "photo_name": result.photo_name,
+      "id": 13,
+      "name": "Baltic Sea",
+      "description": "Some place description",
+      "photo_name": "test.png",
     }
   ]
 }

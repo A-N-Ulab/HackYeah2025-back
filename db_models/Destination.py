@@ -7,6 +7,7 @@ class Destination(db.Model):
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
     photo_name = db.Column(db.String, nullable=False)
+
     orientality = db.Column(db.Float, nullable=False)
     temperature = db.Column(db.Float, nullable=False)
     historicity = db.Column(db.Float, nullable=False)
