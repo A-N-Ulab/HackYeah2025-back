@@ -17,13 +17,11 @@ def create_app():
     app = Flask(__name__)
 
     load_dotenv()
-    print("Environ:")
-    print(os.environ)
 
     CORS(app, supports_credentials=True, origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://hack-yeah-fastapi-mglkv.ondigitalocean.app/",
+        "https://hy25.anulab.tech/",
     ])
 
     USER = os.getenv("DB_USERNAME")
