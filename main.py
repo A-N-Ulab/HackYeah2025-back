@@ -1,6 +1,5 @@
-from fastapi import FastAPI
-
-app = FastAPI()
+from flask import Flask
+app = Flask(__name__)
 
 @app.get("/health")
 async def health():

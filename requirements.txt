@@ -1,7 +1,12 @@
 torch==2.4.1+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu
 pydantic
-fastapi
+flask
+gunicorn
+itsdangerous
+Jinja2
+MarkupSafe
+Werkzeug
 uvicorn
 gunicorn
 scikit-learn
