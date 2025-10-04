@@ -1,5 +1,6 @@
 import time
 from datetime import datetime, timedelta
+from typing import Optional
 
 import ulid
 
@@ -65,7 +66,19 @@ class TokensStore:
     #
     #     userId = result[0][0]
     #     return userId
-    #
+
+
+    def getUserToken(self, userId: int) -> Optional[str]:
+        result = Token.query.filter_by(user_id=userId).first()
+
+        if result is None:
+            return None
+
+        token = result.id
+        return token
+
+
+
     # def deleteToken(self, token: str) -> bool:
     #     result = self.con.executeCount("DELETE FROM tokens WHERE id = %s", (token,))
     #     return result > 0

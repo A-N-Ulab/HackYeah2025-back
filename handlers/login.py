@@ -13,14 +13,17 @@ class Model(BaseModel):
 def handle(event: Model, store: MainStore):
     print("Login!! ", event.model_dump())
 
-    query = db.session.query(User).filter(User.username==event.username, User.password==event.password)
-    result = query.one_or_none()
+    result = User.query.filter(User.username==event.username, User.password==event.password).first()
 
     if result is None:
         return {"Error": "Invalid username or password"}, 403
 
     userId = result.id
 
-    token = store.tokens.createToken(userId)
+    token = store.tokens.getUserToken(userId)
+
+    if token is None:
+        # User not yet logged in - create new token
+        token = store.tokens.createToken(userId)
 
     return {"token": token, "user_id": userId}
