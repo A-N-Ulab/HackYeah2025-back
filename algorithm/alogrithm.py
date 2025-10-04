@@ -4,7 +4,7 @@ from scipy.special import softmax
 
 
 
-def create_first_time(features_vectors:np.array, chocies:list[bool]):
+def create_first_time(features_vectors:np.array, chocies:list[bool]) -> np.array:
     VECTOR_FEATURES = 8
 
 
@@ -34,13 +34,16 @@ def create_trip(user_preferences: np.array, random: bool = False) -> np.array:
     return user_preferences
 
 def update_preferences(user_preferences: np.array, place_features: np.array, decision: bool) -> np.array:
-    learning_rate = 0.01
-    num_features = 3
-    num_of_parameters = 10
+    LEARING_RATE = 0.01
+    num_features = len(user_preferences)
+    RANDOM_PARM_COUNT = 3
 
-    chosen_features = np.zeros(num_of_parameters)
-    indices = np.random.choice(num_of_parameters, num_features, replace=False)
-    chosen_features[indices] = learning_rate
+
+
+    #Chosing Random Fetures for DataBase part
+    chosen_features = np.zeros(RANDOM_PARM_COUNT)
+    indices = np.random.choice(RANDOM_PARM_COUNT, num_features, replace=False)
+    chosen_features[indices] = LEARING_RATE
 
 
 
