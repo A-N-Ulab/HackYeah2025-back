@@ -1,5 +1,6 @@
 import importlib
 import os
+import traceback
 from typing import Union
 
 from dotenv import load_dotenv
@@ -83,8 +84,8 @@ def general_endpoint_handler(path: str) -> Union[dict, tuple[dict, int]]:
     try:
         resp = handleMethod(reqBody, main_store)
         return resp
-    except Exception as err:
-        print(str(err))
+    except Exception:
+        traceback.print_exc()
         return {"error": "Internal server error"}, 500
 
 

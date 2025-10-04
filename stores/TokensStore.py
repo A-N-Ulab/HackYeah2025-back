@@ -1,4 +1,3 @@
-import time
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -23,50 +22,36 @@ class TokensStore:
 
         return token
 
-    # def isValid(self, token: str) -> bool:
-    #     result = self.con.query("SELECT * FROM tokens WHERE id = %s", (token,))
-    #
-    #     if len(result) == 0:
-    #         return False
-    #
-    #     expiresAt: datetime = result[0][2]
-    #
-    #     if self.con.dbTimeNow() < expiresAt:
-    #         # Renew token TTL
-    #         expiresAt = self._nowPlusTTL()
-    #         self.con.executeCount("UPDATE tokens SET expires_at = %s WHERE id = %s", (expiresAt, token))
-    #         return True
-    #
-    #     # This token exists, but is expired - let's delete it
-    #     self.con.executeCount("DELETE FROM tokens WHERE id = %s", (token,))
-    #
-    #     return False
-    #
-    # def isValidUser(self, token: str, userId: str) -> bool:
-    #     result = self.con.query("SELECT * FROM tokens WHERE id = %s AND user = %s", (token, userId))
-    #
-    #     if len(result) == 0:
-    #         return False
-    #
-    #     expiresAt: datetime = result[0][2]
-    #
-    #     if self.con.dbTimeNow() < expiresAt:
-    #         # Renew token TTL
-    #         expiresAt = self._nowPlusTTL()
-    #         self.con.executeCount("UPDATE SET expires_at = %s WHERE id = %s", (expiresAt, token))
-    #         return True
-    #
-    #     return False
-    #
-    # def getUserId(self, token: str) -> Optional[str]:
-    #     result = self.con.query("SELECT user FROM tokens WHERE id = %s", (token,))
-    #
-    #     if len(result) == 0:
-    #         return None
-    #
-    #     userId = result[0][0]
-    #     return userId
+    def isValid(self, token: str) -> bool:
+        result = Token.query.filter_by(id=token).first()
 
+        if result is None:
+            return False
+
+        expiresAt: datetime = result.expires_at
+
+        if self._now() < expiresAt:
+            # Renew token TTL
+            expiresAt = self._nowPlusTTL()
+            Token.query.filter_by(id=token).first().expires_at = expiresAt
+            return True
+
+        db.session.delete(result)
+        db.session.commit()
+        return False
+
+    def isValidUser(self, token: str, userId: str) -> bool:
+        result = Token.query.filter_by(id=token, user_id=userId).first()
+        return result is not None
+
+    def getUserId(self, token: str) -> Optional[str]:
+        result = Token.query.filter_by(id=token).first()
+
+        if result is None:
+            return None
+
+        userId = result.user_id
+        return userId
 
     def getUserToken(self, userId: int) -> Optional[str]:
         result = Token.query.filter_by(user_id=userId).first()
@@ -77,11 +62,11 @@ class TokensStore:
         token = result.id
         return token
 
-
-
-    # def deleteToken(self, token: str) -> bool:
-    #     result = self.con.executeCount("DELETE FROM tokens WHERE id = %s", (token,))
-    #     return result > 0
+    def deleteToken(self, token: str) -> bool:
+        deletedCount = Token.query.filter_by(id=token).delete()
+        db.session.commit()
+        deletedAnything = deletedCount > 0
+        return deletedAnything
 
     def _now(self) -> datetime:
         nowTimestamp = datetime.now()
