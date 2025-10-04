@@ -34,21 +34,21 @@ def create_trip(user_preferences: np.array, random: bool = False) -> np.array:
     return user_preferences
 
 def update_preferences(user_preferences: np.array, place_features: np.array, decision: bool) -> np.array:
-    LEARING_RATE = 0.01
+    LR = 0.01
     num_features = len(user_preferences)
     RANDOM_PARM_COUNT = 3
 
-    decision = 1
+    assert len(user_preferences) == len(place_features)
+
+    direction = 1
     if not decision:
         direction *= -1
 
 
-    user_preferences = np.clip(user_preferences + direction*(place_features-user_preferences),0,1)
+    user_preferences = np.clip(user_preferences + LR*direction*(place_features-user_preferences),0,1)
 
     #Chosing Random Fetures for DataBase part
-    chosen_features = np.zeros(RANDOM_PARM_COUNT)
-    indices = np.random.choice(RANDOM_PARM_COUNT, num_features, replace=False)
-    chosen_features[indices] = LEARING_RATE
+    
 
     return user_preferences
 
@@ -57,3 +57,5 @@ def update_preferences(user_preferences: np.array, place_features: np.array, dec
 def update_trip():
     pass
 
+
+print(update_preferences(np.array([0]),np.array([0]),True))
