@@ -1,4 +1,10 @@
+from matplotlib.style.core import available
+
 from lib import db
+
+TRIP_STATE_FIRST_SURVEY = "first_survey"
+TRIP_STATE_SWAPPING = "swapping"
+
 
 class Trip(db.Model):
     __tablename__ = "trips"
@@ -7,6 +13,14 @@ class Trip(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False)
+
+    state = db.Column(db.String, nullable=False)
+    """
+    Available values:
+    
+    - "first_survey" - establishing base preferences based on batch of photos
+    - "swapping" - fine tuning preferences on each swap
+    """
 
     orientality = db.Column(db.Float, nullable=False)
     temperature = db.Column(db.Float, nullable=False)
