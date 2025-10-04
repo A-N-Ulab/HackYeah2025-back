@@ -12,4 +12,3 @@ def hello_world():
 @app.route("/test")
 def test_endpoint():
     return {"test": "endpoint"}
-
