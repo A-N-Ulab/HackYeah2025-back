@@ -9,4 +9,6 @@ class Model(BaseModel):
 def handle(event: Model) -> dict:
     print("Login!! ", event.model_dump())
 
-    return {"your username: ": event.username}
+    token = "fake_token"
+
+    return {"token": token, "user_id": 13}
