@@ -1,8 +1,24 @@
 import numpy as np
+from scipy.special import softmax
 
 
-def create_first_time():
-    return np.zeros(10)
+
+
+def create_first_time(features_vectors:np.array, chocies:list[bool]) -> np.array:
+    VECTOR_FEATURES = 8
+
+
+    assert len(features_vectors) == len(chocies)
+    
+    sum = np.zeros(VECTOR_FEATURES)
+
+    for idx, choice in enumerate(chocies):
+        if choice == False:
+            features_vectors[idx] = (-1)*features_vectors[idx]
+
+        sum += features_vectors[idx]
+
+    return softmax(sum)
 
 
 def create_trip(user_preferences: np.array, random: bool = False) -> np.array:
@@ -18,26 +34,28 @@ def create_trip(user_preferences: np.array, random: bool = False) -> np.array:
     return user_preferences
 
 def update_preferences(user_preferences: np.array, place_features: np.array, decision: bool) -> np.array:
-    learning_rate = 0.01
-    num_features = 3
-    num_of_parameters = 10
+    LR = 0.01
+    num_features = len(user_preferences)
+    RANDOM_PARM_COUNT = 3
 
-    chosen_features = np.zeros(num_of_parameters)
-    indices = np.random.choice(num_of_parameters, num_features, replace=False)
-    chosen_features[indices] = learning_rate
+    assert len(user_preferences) == len(place_features)
+
+    direction = 1
+    if not decision:
+        direction *= -1
 
 
+    user_preferences = np.clip(user_preferences + LR*direction*(place_features-user_preferences),0,1)
 
-    if decision:
-        pass
+    #Chosing Random Fetures for DataBase part
+    
 
     return user_preferences
-
-    # update
-
 
 
 
 def update_trip():
     pass
 
+
+print(update_preferences(np.array([0]),np.array([0]),True))
