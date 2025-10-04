@@ -10,6 +10,6 @@ def hello_world():
 
 
 @app.route("/test")
-def test_endpoint(request):
-    return {"test": "endpoint", "request": request}
+def test_endpoint():
+    return {"test": "endpoint"}
 
