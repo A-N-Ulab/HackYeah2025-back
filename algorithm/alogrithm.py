@@ -1,8 +1,24 @@
 import numpy as np
+from scipy.special import softmax
 
 
-def create_first_time():
-    return np.zeros(10)
+
+
+def create_first_time(features_vectors:np.array, chocies:list[bool]):
+    VECTOR_FEATURES = 8
+
+
+    assert len(features_vectors) == len(chocies)
+    
+    sum = np.zeros(VECTOR_FEATURES)
+
+    for idx, choice in enumerate(chocies):
+        if choice == False:
+            features_vectors[idx] = (-1)*features_vectors[idx]
+
+        sum += features_vectors[idx]
+
+    return softmax(sum)
 
 
 def create_trip(user_preferences: np.array, random: bool = False) -> np.array:
