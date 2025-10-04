@@ -8,8 +8,9 @@ from flask import request
 from flask_cors import CORS
 from pydantic import BaseModel, ValidationError
 
-from db_models.Users import User
+from db_models.User import User
 from lib import db
+from stores.MainStore import MainStore
 
 
 def create_app():
@@ -37,16 +38,13 @@ def create_app():
 
     db.init_app(app)
 
-    init_handlers()
+    global main_store
+    main_store = MainStore()
 
     return app
 
 
-def init_handlers():
-    print("Handlers imported")
-    pass
-
-
+main_store: MainStore  # set in create_app
 app = create_app()
 
 
@@ -84,7 +82,7 @@ def general_endpoint_handler(path: str) -> Union[dict, tuple[dict, int]]:
         return {"error": errors}, 400
 
     try:
-        resp = handleMethod(reqBody)
+        resp = handleMethod(reqBody, main_store)
         return resp
     except Exception as err:
         print(str(err))

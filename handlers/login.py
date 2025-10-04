@@ -1,14 +1,26 @@
 from pydantic import BaseModel
 
+from db_models.User import User
+from lib import db
+from stores.MainStore import MainStore
+
 
 class Model(BaseModel):
     username: str
     password: str
 
 
-def handle(event: Model) -> dict:
+def handle(event: Model, store: MainStore):
     print("Login!! ", event.model_dump())
 
-    token = "fake_token"
+    query = db.session.query(User).filter(User.username==event.username, User.password==event.password)
+    result = query.one_or_none()
 
-    return {"token": token, "user_id": 13}
+    if result is None:
+        return {"Error": "Invalid username or password"}, 403
+
+    userId = result.id
+
+    token = store.tokens.createToken(userId)
+
+    return {"token": token, "user_id": userId}
