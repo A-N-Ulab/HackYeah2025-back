@@ -1,5 +1,6 @@
 import importlib
 import os
+import traceback
 from typing import Union
 
 from dotenv import load_dotenv
@@ -17,12 +18,11 @@ def create_app():
     app = Flask(__name__)
 
     load_dotenv()
-    print("Environ:")
-    print(os.environ)
 
     CORS(app, supports_credentials=True, origins=[
         "http://localhost:3000",
-        "http://127.0.0.1:3000"
+        "http://127.0.0.1:3000",
+        "https://hy25.anulab.tech",
     ])
 
     USER = os.getenv("DB_USERNAME")
@@ -84,8 +84,8 @@ def general_endpoint_handler(path: str) -> Union[dict, tuple[dict, int]]:
     try:
         resp = handleMethod(reqBody, main_store)
         return resp
-    except Exception as err:
-        print(str(err))
+    except Exception:
+        traceback.print_exc()
         return {"error": "Internal server error"}, 500
 
 
