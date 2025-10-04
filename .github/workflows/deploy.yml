@@ -18,8 +18,8 @@ jobs:
 
       - name: Deploy the app to DigitalOcean
         uses: digitalocean/app_action/deploy@v2
-        env:
-          # Any environment variables your app requires can be set here from secrets
-          YOUR_APP_SECRET: ${{ secrets.YOUR_APP_SECRET }}
+#        env:
+#          # Any environment variables your app requires can be set here from secrets
+#          YOUR_APP_SECRET: ${{ secrets.YOUR_APP_SECRET }}
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
