@@ -12,5 +12,8 @@ gunicorn
 scikit-learn
 
 Flask~=3.1.2
+flask_sqlalchemy
+psycopg2-binary
 dotenv~=0.9.9
 python-dotenv~=1.1.1
+flask-cors~=6.0.1
