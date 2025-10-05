@@ -33,4 +33,4 @@ def handle(event: Model, store: MainStore):
 
 
 
-    return {"trips": photos_list}
+    return {"photos": photos_list}

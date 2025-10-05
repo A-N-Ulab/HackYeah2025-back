@@ -2,7 +2,8 @@
 ## Request
 ```json
 {
-  "token": "<token>"
+  "token": "<token>",
+  ""
 }
 ```
 
