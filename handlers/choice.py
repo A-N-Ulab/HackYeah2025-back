@@ -1,9 +1,15 @@
-from pydantic import BaseModel
+import traceback
 
+from pydantic import BaseModel
+from sqlalchemy.exc import NoReferencedTableError
+
+from db_models.SurveyChoices import SurveyChoices
 from db_models.Trip import Trip, TRIP_STATE_FIRST_SURVEY
 from stores import MainStore
 
 from lib import db
+
+CHOICES_IN_BATCH = 15
 
 
 class Model(BaseModel):
@@ -26,5 +32,14 @@ def handle(event: Model, store: MainStore):
     if trip is None:
         return {"error": "Trip not found"}, 404
 
+    try:
+        newChoice = SurveyChoices(trip_id=event.trip_id, destination_id=event.destination_id, choice=event.choice)
+        db.session.add(newChoice)
+        db.session.commit()
+    except NoReferencedTableError as err:
+        traceback.print_exc()
+        return {"error": "Invalid ID", "detail": str(err)}, 404
 
-    return {}
+    choicesCount = SurveyChoices.query.filter_by(trip_id=event.trip_id).count()
+
+    return {"choice_idx": choicesCount, "total_choices": CHOICES_IN_BATCH}
