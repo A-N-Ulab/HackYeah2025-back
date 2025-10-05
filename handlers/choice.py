@@ -32,6 +32,7 @@ def handle(event: Model, store: MainStore):
 
     if trip is None:
         return {"error": "Trip not found"}, 404
+
     if trip.state == TRIP_STATE_FIRST_SURVEY:
         try:
             newChoice = DestinationChoices(trip_id=event.trip_id, destination_id=event.destination_id, choice=event.choice)
@@ -63,8 +64,7 @@ def handle(event: Model, store: MainStore):
             setattr(trip, "state", TRIP_STATE_SWAPPING)
 
             db.session.commit()
-        # inside first surway if
+
         return {"choice_idx": len(batch_choices), "total_choices": CHOICES_IN_BATCH}
 
-    # infinite loop of swapping until ... ! bool value
     return {"survey":"ok"}
