@@ -1,6 +1,8 @@
 import numpy as np
 from pydantic import BaseModel
-from sqlalchemy import select, literal, exists
+from sqlalchemy import select, exists, literal
+from sqlalchemy.sql import and_, not_
+from sqlalchemy import func  # opcjonalnie, gdybyś chciał użyć func.power
 
 from Constants import CHOICES_IN_BATCH
 from db_models.Destination import Destination
@@ -62,59 +64,49 @@ def handle(event: Model, store: MainStore):
 
     return response
 
+
 def generate_algorithm_outcome(event: Model, trip: Trip):
+    # różnice cech do aktualnego tripa
+    diffs = [
+        (Destination.orientality - literal(trip.orientality)),
+        (Destination.temperature - literal(trip.temperature)),
+        (Destination.historicity - literal(trip.historicity)),
+        (Destination.sportiness - literal(trip.sportiness)),
+        (Destination.forest_cover - literal(trip.forest_cover)),
+        (Destination.build_up_area - literal(trip.build_up_area)),
+        (Destination.terrain_fluctuation - literal(trip.terrain_fluctuation)),
+        (Destination.water - literal(trip.water)),
+    ]
 
-    # (1) Wyrażenie na odległość^2 do bieżącego tripa
-    dist2 = (
-            (Destination.orientality - literal(trip.orientality)) ** 2 +
-            (Destination.temperature - literal(trip.temperature)) ** 2 +
-            (Destination.historicity - literal(trip.historicity)) ** 2 +
-            (Destination.sportiness - literal(trip.sportiness)) ** 2 +
-            (Destination.forest_cover - literal(trip.forest_cover)) ** 2 +
-            (Destination.build_up_area - literal(trip.build_up_area)) ** 2 +
-            (Destination.terrain_fluctuation - literal(trip.terrain_fluctuation)) ** 2 +
-            (Destination.water - literal(trip.water)) ** 2
-    ).label("dist2")
+    # suma kwadratów (bez ** — używamy mnożenia)
+    # równoważne: sum(func.power(d, 2) for d in diffs)
+    dist2 = sum(d * d for d in diffs).label("dist2")
 
-    # (2) Wyklucz destynacje już widziane/wybrane w tym tripie
-    seen_exists = exists(
+    # wyklucz już występujące w DestinationChoices dla tego tripa
+    seen = exists(
         select(1).where(
-            (DestinationChoices.trip_id == event.trip_id) &
+            (DestinationChoices.trip_id == trip.id) &
             (DestinationChoices.destination_id == Destination.id)
         )
     )
 
-    # (3) (opcjonalnie) nie proponuj tej, którą właśnie przeglądano
-    exclude_current = True
-    where_clause = ~seen_exists
-    if hasattr(event, "destination_id") and event.destination_id is not None:
-        exclude_current = Destination.id != event.destination_id
-        where_clause = where_clause & exclude_current
-
-    # (4) Pobierz najbliższą
-    row = db.session.execute(
+    stmt = (
         select(
             Destination.id,
             Destination.name,
             Destination.description,
-            Destination.photo_name
+            Destination.photo_name,
+            dist2,
         )
-        .where(where_clause)
-        .order_by(dist2.asc())
-        .limit(1)
-    ).first()
+        .where(not_(seen))
+    )
 
+    # (opcjonalnie) nie proponuj tej samej, którą właśnie przeglądano
+    if getattr(event, "destination_id", None) is not None:
+        stmt = stmt.where(Destination.id != event.destination_id)
+
+    # najbliższa po dist2
+    stmt = stmt.order_by(dist2.asc()).limit(1)
+
+    row = db.session.execute(stmt).first()
     return row
-    # # (5) Zbuduj listę 'destinations' oczekiwaną przez Twój handler
-    # destinations = []
-    # if row:
-    #     destinations.append({
-    #         "id": row.id,
-    #         "name": row.name,
-    #         "description": row.description,
-    #         "photo_name": row.photo_name,
-    #     })
-    # else:
-    #     # Jeśli wszystko zostało już wykorzystane – możesz zwrócić pustą listę
-    #     # lub np. błąd/komunikat o braku wyników.
-    #     destinations = []
