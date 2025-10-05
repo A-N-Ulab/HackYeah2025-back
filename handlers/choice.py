@@ -33,15 +33,15 @@ def handle(event: Model, store: MainStore):
     if trip is None:
         return {"error": "Trip not found"}, 404
 
-    if trip.state == TRIP_STATE_FIRST_SURVEY:
-        try:
-            newChoice = DestinationChoices(trip_id=event.trip_id, destination_id=event.destination_id, choice=event.choice)
-            db.session.add(newChoice)
-            db.session.commit()
-        except NoReferencedTableError as err:
-            traceback.print_exc()
-            return {"error": "Invalid ID", "detail": str(err)}, 404
+    try:
+        newChoice = DestinationChoices(trip_id=event.trip_id, destination_id=event.destination_id, choice=event.choice)
+        db.session.add(newChoice)
+        db.session.commit()
+    except NoReferencedTableError as err:
+        traceback.print_exc()
+        return {"error": "Invalid ID", "detail": str(err)}, 404
 
+    if trip.state == TRIP_STATE_FIRST_SURVEY:
         batch_choices = DestinationChoices.query.filter_by(trip_id=event.trip_id).all()
 
         if len(batch_choices) >= CHOICES_IN_BATCH:
@@ -66,5 +66,7 @@ def handle(event: Model, store: MainStore):
             db.session.commit()
 
         return {"choice_idx": len(batch_choices), "total_choices": CHOICES_IN_BATCH}
+
+    # TODO update trip attributes
 
     return {"survey":"ok"}
