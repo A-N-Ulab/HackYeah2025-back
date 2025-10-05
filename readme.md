@@ -1,5 +1,5 @@
 # Swipe&Go backend
-
+![alt text](doc/image.png)
 ## First time setup
 
 ```shell
@@ -40,5 +40,3 @@ Hit the url:
 https://hack-yeah-fastapi-mglkv.ondigitalocean.app/
 ```
 
-## Notes
-For future
