@@ -43,7 +43,6 @@ def sampler() -> list[str]:
     return samples
 
 def update_preferences(user_preferences: list[float], place_features: list[float], decision: bool) -> dict:
-
     assert len(user_preferences) == len(place_features) == NUM_FEATURES
 
     user_preferences = np.array(user_preferences)

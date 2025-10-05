@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy.exc import NoReferencedTableError
 
 from Constants import CHOICES_IN_BATCH
-from algorithm.alogrithm import create_first_time
+from algorithm import alogrithm
 
 from db_models.Destination import Destination
 from db_models.DestinationChoices import DestinationChoices
@@ -56,7 +56,7 @@ def handle(event: Model, store: MainStore):
                                          destination.terrain_fluctuation, destination.water])
                 choices.append(batch_choice.choice)
 
-            algo_solution = create_first_time(features_vectors, choices)
+            algo_solution = alogrithm.create_first_time(features_vectors, choices)
 
             # add to trips
             for solution in algo_solution.keys():
@@ -67,6 +67,20 @@ def handle(event: Model, store: MainStore):
 
         return {"choice_idx": len(batch_choices), "total_choices": CHOICES_IN_BATCH}
 
-    # TODO update trip attributes
+    trip_preferences = [trip.orientality, trip.temperature, trip.historicity,
+                        trip.sportiness, trip.forest_cover, trip.build_up_area,
+                        trip.terrain_fluctuation, trip.water]
 
-    return {"survey":"ok"}
+    destination = Destination.query.filter_by(id=event.destination_id).first()
+
+    place_features = [destination.orientality, destination.temperature, destination.historicity,
+                             destination.sportiness, destination.forest_cover, destination.build_up_area,
+                             destination.terrain_fluctuation, destination.water]
+
+    newPreferences = alogrithm.update_preferences(trip_preferences, place_features, event.choice)
+    print(f"{newPreferences=}")
+
+    for feature_name, value in newPreferences.items():
+        setattr(trip, feature_name, value)
+
+    return {"survey":"ok", "preferences": newPreferences}
