@@ -7,7 +7,7 @@ from Constants import CHOICES_IN_BATCH
 from algorithm.alogrithm import create_first_time
 
 from db_models.Destination import Destination
-from db_models.SurveyChoices import SurveyChoices
+from db_models.DestinationChoices import DestinationChoices
 from db_models.Trip import Trip, TRIP_STATE_SWAPPING
 
 from stores import MainStore
@@ -34,14 +34,14 @@ def handle(event: Model, store: MainStore):
         return {"error": "Trip not found"}, 404
 
     try:
-        newChoice = SurveyChoices(trip_id=event.trip_id, destination_id=event.destination_id, choice=event.choice)
+        newChoice = DestinationChoices(trip_id=event.trip_id, destination_id=event.destination_id, choice=event.choice)
         db.session.add(newChoice)
         db.session.commit()
     except NoReferencedTableError as err:
         traceback.print_exc()
         return {"error": "Invalid ID", "detail": str(err)}, 404
 
-    batch_choices = SurveyChoices.query.filter_by(trip_id=event.trip_id).all()
+    batch_choices = DestinationChoices.query.filter_by(trip_id=event.trip_id).all()
 
     if len(batch_choices) >= CHOICES_IN_BATCH:
         # prepare for algorithm
@@ -65,7 +65,7 @@ def handle(event: Model, store: MainStore):
         setattr(trip, "state", TRIP_STATE_SWAPPING)
         # remove from survey
 
-        SurveyChoices.query.filter_by(trip_id=event.trip_id).delete()
+        DestinationChoices.query.filter_by(trip_id=event.trip_id).delete()
 
         db.session.commit()
 

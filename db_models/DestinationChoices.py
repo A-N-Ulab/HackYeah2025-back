@@ -1,8 +1,8 @@
 from lib import db
 
 
-class SurveyChoices(db.Model):
-    __tablename__ = 'survey_choices'
+class DestinationChoices(db.Model):
+    __tablename__ = 'destination_choices'
 
     id = db.Column(db.Integer, primary_key=True)
     trip_id = db.Column(db.Integer)
