@@ -4,7 +4,7 @@ from scipy.special import softmax
 
 FEATURE_NAMES = ["orientality", "temperature", "historicity", "sportiness","forest_cover","build_up_area","terrain_fluctuation", "water"]
 NUM_FEATURES = len(FEATURE_NAMES)
-LR = 0.01
+LR = 0.2
 RANDOM_PARM_COUNT = 3
 
 #For Backend
@@ -43,7 +43,6 @@ def sampler() -> list[str]:
     return samples
 
 def update_preferences(user_preferences: list[float], place_features: list[float], decision: bool) -> dict:
-
     assert len(user_preferences) == len(place_features) == NUM_FEATURES
 
     user_preferences = np.array(user_preferences)
