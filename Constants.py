@@ -1,0 +1,2 @@
+
+CHOICES_IN_BATCH = 15
