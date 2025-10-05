@@ -14,3 +14,4 @@ Make a POST request to the `/delete_trip` endpoint with following payload:
 {
     "id": 3
 }
+```
