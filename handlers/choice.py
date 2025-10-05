@@ -2,17 +2,17 @@ import traceback
 
 from pydantic import BaseModel
 from sqlalchemy.exc import NoReferencedTableError
+
+from Constants import CHOICES_IN_BATCH
 from algorithm.alogrithm import create_first_time
 
 from db_models.Destination import Destination
 from db_models.SurveyChoices import SurveyChoices
-from db_models.Trip import Trip, TRIP_STATE_FIRST_SURVEY, TRIP_STATE_SWAPPING
+from db_models.Trip import Trip, TRIP_STATE_SWAPPING
 
 from stores import MainStore
 
 from lib import db
-
-CHOICES_IN_BATCH = 15
 
 
 class Model(BaseModel):
@@ -23,8 +23,6 @@ class Model(BaseModel):
 
 
 def handle(event: Model, store: MainStore):
-    print("You choice sth.!! ", event.model_dump())
-
     userId = store.tokens.getUserId(event.token)
 
     if userId is None:

@@ -3,8 +3,7 @@ from scipy.special import softmax
 
 
 FEATURE_NAMES = ["orientality", "temperature", "historicity", "sportiness","forest_cover","build_up_area","terrain_fluctuation", "water"]
-VECTOR_FEATURES = 8
-NUM_FEATURES = 8
+NUM_FEATURES = len(FEATURE_NAMES)
 LR = 0.01
 RANDOM_PARM_COUNT = 3
 
@@ -16,12 +15,14 @@ def _make_dict(values:np.array) -> dict:
 
 #Algorithm
 def create_first_time(features_vectors:list[list[float]], choices:list[bool]) -> dict:
-    
-    assert len(features_vectors) == len(choices) == NUM_FEATURES
+    assert len(features_vectors) == len(choices)
+
+    for features_of_dest in features_vectors:
+        assert len(features_of_dest) == NUM_FEATURES
     
     features_vectors = np.array(features_vectors)
 
-    sum = np.zeros(VECTOR_FEATURES)
+    sum = np.zeros(NUM_FEATURES)
 
     for idx, choice in enumerate(choices):
         if choice == False:
