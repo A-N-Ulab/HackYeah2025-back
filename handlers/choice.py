@@ -83,4 +83,6 @@ def handle(event: Model, store: MainStore):
     for feature_name, value in newPreferences.items():
         setattr(trip, feature_name, value)
 
+    db.session.commit()
+
     return {"survey":"ok", "preferences": newPreferences}
