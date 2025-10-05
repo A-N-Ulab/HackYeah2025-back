@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from Constants import CHOICES_IN_BATCH
 from db_models.Destination import Destination
+from db_models.DestinationChoices import DestinationChoices
 from db_models.Trip import Trip
 from lib import db
 from stores import MainStore
@@ -22,8 +23,9 @@ def handle(event: Model, store: MainStore):
     destinations = []
 
     allIds = [int(r[0]) for r in db.session.query(Destination.id).all()]
+    batch_choices = DestinationChoices.query.filter_by(trip_id=event.trip_id).all()
 
-    choices = np.random.choice(allIds, size=CHOICES_IN_BATCH, replace=False).tolist()
+    choices = np.random.choice(allIds, size=CHOICES_IN_BATCH-len(batch_choices), replace=False).tolist()
 
     allResults = Destination.query.filter(Destination.id.in_(choices)).all()
 
